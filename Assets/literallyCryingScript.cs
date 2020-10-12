@@ -9,7 +9,7 @@ public class literallyCryingScript : MonoBehaviour
     public KMSelectable PlayButton;
     public Material[] Emoji;
     public Renderer EmojiShow;
-    public KMAudio Audio;
+    public KMAudio audio;
     public KMNeedyModule Needy;
 
     private static string[] _emojis = new[] { "sleep", "stare", "cry"};
@@ -21,6 +21,11 @@ public class literallyCryingScript : MonoBehaviour
     int Activated;
     private bool _isSolved;
 
+    private void Start()
+    {
+        audio = GetComponent<KMAudio>();
+    }
+
     void Awake()
     {
         moduleId = moduleIdCounter++;
@@ -28,7 +33,6 @@ public class literallyCryingScript : MonoBehaviour
         Needy.OnNeedyActivation += OnNeedyActivation;
         Needy.OnNeedyDeactivation += OnNeedyDeactivation;
         Needy.OnTimerExpired += OnTimerExpired;
-        Audio = GetComponent<KMAudio>();
         emojiSprite = 0;
         Activated = 54;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
@@ -47,7 +51,7 @@ public class literallyCryingScript : MonoBehaviour
         if (Activated <= 1)
         {
             GetComponent<KMSelectable>().AddInteractionPunch();
-            Audio.PlaySoundAtTransform("insult", transform);
+            audio.PlaySoundAtTransform("insult", transform);
             Activated = 54;
             Invoke("Play", 1.7f);
         }
@@ -61,7 +65,7 @@ public class literallyCryingScript : MonoBehaviour
     {
         emojiSprite = 2;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
-        Audio.PlaySoundAtTransform("crybaby", transform);
+        audio.PlaySoundAtTransform("crybaby", transform);
         Invoke("OnNeedyDeactivation", 0.7f);
     }
 
