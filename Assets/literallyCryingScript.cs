@@ -54,6 +54,8 @@ public class literallyCryingScript : MonoBehaviour
             audio.PlaySoundAtTransform("insult", transform);
             Activated = 54;
             Invoke("Play", 1.7f);
+            Needy.HandlePass();
+            _isSolved = true;
         }
         else
         {
@@ -79,8 +81,6 @@ public class literallyCryingScript : MonoBehaviour
 
     protected void OnNeedyDeactivation()
     {
-        Needy.HandlePass();
-        _isSolved = true;
         emojiSprite = 0;
         Activated = 54;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];

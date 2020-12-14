@@ -16,6 +16,6 @@ MonoBehaviour:
   author: TracksJosh
   description: "When people know you for Literally Nothing.\n\n\nYes, that is my face.
     Uglier than a rock.\n\nModule ID: literallyCrying\n\nManuals: \nhttps://ktane.timwi.de/HTML/Literally%20Crying.html\nhttps://ktane.timwi.de/PDF/Literally%20Crying.pdf"
-  version: 1.002
+  version: 1.003
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 5c3d78b1f1795364bb89cfd491a33cc4, type: 3}
