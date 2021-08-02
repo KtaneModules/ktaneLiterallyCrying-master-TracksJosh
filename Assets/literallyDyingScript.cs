@@ -4,26 +4,40 @@ using System.Collections;
 using KModkit;
 using System;
 
-public class literallyCryingScript : MonoBehaviour
+public class literallyDyingScript : MonoBehaviour
 {
-    public KMSelectable PlayButton;
+    public KMSelectable Bandage;
     public Material[] Emoji;
     public Renderer EmojiShow;
     public KMAudio audio;
     public KMNeedyModule Needy;
+    public GameObject customImage;
 
-    private static string[] _emojis = new[] { "sleep", "stare", "cry"};
+    private static string[] _emojis = new[] { "stare", "fever", "ghost"};
 
     int emojiSprite = 0;
+    int scare = 0;
 
     static int moduleIdCounter = 1;
     int moduleId;
     int Activated;
     private bool _isSolved;
-
+    private bool _isScare = false;
     private void Start()
     {
         audio = GetComponent<KMAudio>();
+    }
+
+    private void Update()
+    {
+        if (_isScare == true)
+        {
+            customImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            customImage.gameObject.SetActive(false);
+        }
     }
 
     void Awake()
@@ -38,45 +52,69 @@ public class literallyCryingScript : MonoBehaviour
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         if (Activated <= 1)
         {
-            PlayButton.OnInteract += delegate () { PressPlay(); return false; };
+            Bandage.OnInteract += delegate () { PressPlay(); return false; };
         }
         else
         {
-            PlayButton.OnInteract += delegate () { PressPlay(); return true; };
+            Bandage.OnInteract += delegate () { PressPlay(); return true; };
         }
     }
 
     private void PressPlay()
     {
-        if (Activated <= 1)
+        if(scare == 0)
         {
-            Needy.HandlePass();
-            _isSolved = true;
-            GetComponent<KMSelectable>().AddInteractionPunch();
-            audio.PlaySoundAtTransform("insult", transform);
-            Activated = 54;
-            Invoke("Play", 1.7f);
+            if (Activated <= 1)
+            {
+                Needy.HandlePass();
+                _isSolved = true;
+                GetComponent<KMSelectable>().AddInteractionPunch();
+                emojiSprite = 0;
+                EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+            }
+            else
+            {
+                GetComponent<KMSelectable>().AddInteractionPunch();
+            }
         }
         else
         {
+            emojiSprite = 2;
+            EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+            Needy.HandlePass();
+            _isSolved = true;
             GetComponent<KMSelectable>().AddInteractionPunch();
         }
+        
+    }
+
+
+    protected void OnNeedyActivation()
+    {
+        if(scare == 0)
+        {
+            _isSolved = false;
+            emojiSprite = 1;
+            EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+            Activated = 0;
+        }
+        else
+        {
+            emojiSprite = 2;
+            EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+            Needy.HandlePass();
+            _isSolved = true;
+            _isScare = true;
+            Invoke("Play", 1.7f);
+            audio.PlaySoundAtTransform("insult", transform);
+        }
+
     }
 
     private void Play()
     {
-        emojiSprite = 2;
-        EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
-        audio.PlaySoundAtTransform("crybaby", transform);
-        Invoke("OnNeedyDeactivation", 0.7f);
-    }
+        _isScare = false;
 
-    protected void OnNeedyActivation()
-    {
-        _isSolved = false;
-        emojiSprite = 1;
-        EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
-        Activated = 0;
     }
 
     protected void OnNeedyDeactivation()
@@ -90,21 +128,21 @@ public class literallyCryingScript : MonoBehaviour
     {
         GetComponent<KMNeedyModule>().OnStrike();
         emojiSprite = 2;
+        scare = 1;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         Needy.HandlePass();
         _isSolved = true;
 
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} play to press the insult button";
+    private readonly string TwitchHelpMessage = @"Use !{0} heal to heal with bandages";
 #pragma warning disable 414
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "play" && Tears[0] != "claim")
+        if (Tears[0] == "heal" && Tears[0] != "claim")
         {
-            PlayButton.OnInteract();
-            yield return string.Format("sendtochaterror WAAAAAAAAAAAAAAAH :(");
+            Bandage.OnInteract();
             yield return null;
         }
         else
@@ -115,7 +153,6 @@ public class literallyCryingScript : MonoBehaviour
             }
             else
             {
-                yield return string.Format("sendtochaterror HAH! LOL! I can't cry :D");
                 yield return null;
             }
         }

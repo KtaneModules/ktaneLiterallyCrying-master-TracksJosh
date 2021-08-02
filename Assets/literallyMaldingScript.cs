@@ -4,15 +4,15 @@ using System.Collections;
 using KModkit;
 using System;
 
-public class literallyCryingScript : MonoBehaviour
-{
-    public KMSelectable PlayButton;
+public class literallyMaldingScript : MonoBehaviour {
+
+    public KMSelectable Hat;
     public Material[] Emoji;
     public Renderer EmojiShow;
     public KMAudio audio;
     public KMNeedyModule Needy;
 
-    private static string[] _emojis = new[] { "sleep", "stare", "cry"};
+    private static string[] _emojis = new[] { "happy", "fuzless", "mad" };
 
     int emojiSprite = 0;
 
@@ -38,24 +38,23 @@ public class literallyCryingScript : MonoBehaviour
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         if (Activated <= 1)
         {
-            PlayButton.OnInteract += delegate () { PressPlay(); return false; };
+            Hat.OnInteract += delegate () { Hatt(); return false; };
         }
         else
         {
-            PlayButton.OnInteract += delegate () { PressPlay(); return true; };
+            Hat.OnInteract += delegate () { Hatt(); return true; };
         }
     }
 
-    private void PressPlay()
+    private void Hatt()
     {
         if (Activated <= 1)
         {
             Needy.HandlePass();
             _isSolved = true;
             GetComponent<KMSelectable>().AddInteractionPunch();
-            audio.PlaySoundAtTransform("insult", transform);
             Activated = 54;
-            Invoke("Play", 1.7f);
+            Invoke("OnNeedyDeactivation", 0.7f);
         }
         else
         {
@@ -65,10 +64,7 @@ public class literallyCryingScript : MonoBehaviour
 
     private void Play()
     {
-        emojiSprite = 2;
-        EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
-        audio.PlaySoundAtTransform("crybaby", transform);
-        Invoke("OnNeedyDeactivation", 0.7f);
+        
     }
 
     protected void OnNeedyActivation()
@@ -91,20 +87,20 @@ public class literallyCryingScript : MonoBehaviour
         GetComponent<KMNeedyModule>().OnStrike();
         emojiSprite = 2;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+        audio.PlaySoundAtTransform("steam", transform);
         Needy.HandlePass();
         _isSolved = true;
 
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} play to press the insult button";
+    private readonly string TwitchHelpMessage = @"Use !{0} fez to give Grunkle Squeaky his fez back.";
 #pragma warning disable 414
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "play" && Tears[0] != "claim")
+        if (Tears[0] == "fez" && Tears[0] != "claim")
         {
-            PlayButton.OnInteract();
-            yield return string.Format("sendtochaterror WAAAAAAAAAAAAAAAH :(");
+            Hat.OnInteract();
             yield return null;
         }
         else
@@ -115,7 +111,6 @@ public class literallyCryingScript : MonoBehaviour
             }
             else
             {
-                yield return string.Format("sendtochaterror HAH! LOL! I can't cry :D");
                 yield return null;
             }
         }

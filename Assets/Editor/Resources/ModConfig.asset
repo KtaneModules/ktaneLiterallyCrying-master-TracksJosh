@@ -12,10 +12,20 @@ MonoBehaviour:
   m_Name: ModConfig
   m_EditorClassIdentifier: 
   id: literallyCrying
-  title: Literally Crying
+  title: Literally Crying and Brothers
   author: TracksJosh
-  description: "When people know you for Literally Nothing.\n\n\nYes, that is my face.
-    Uglier than a rock.\n\nModule ID: literallyCrying\n\nManuals: \nhttps://ktane.timwi.de/HTML/Literally%20Crying.html\nhttps://ktane.timwi.de/PDF/Literally%20Crying.pdf"
-  version: 1.003
+  description: 'When people know you for Literally Nothing and you have brothers!
+
+
+
+    Yes, that is my face. Uglier than a rock.
+
+    Yes, Grunkle is there. Don''t ask why.
+
+
+    Module IDs: literallyCrying, literallyDying, literallyMalding
+
+'
+  version: 2.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: 5c3d78b1f1795364bb89cfd491a33cc4, type: 3}
+  previewImage: {fileID: 2800000, guid: c45f45273c4710d40b5ea4b69cc5ba91, type: 3}
