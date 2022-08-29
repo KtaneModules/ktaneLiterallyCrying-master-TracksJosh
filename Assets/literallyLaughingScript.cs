@@ -4,15 +4,16 @@ using System.Collections;
 using KModkit;
 using System;
 
-public class literallyMaldingScript : MonoBehaviour {
-
-    public KMSelectable Hat;
+public class literallyLaughingScript : MonoBehaviour
+{
+    public GameObject Patrick;
+    public KMSelectable PlayButton;
     public Material[] Emoji;
     public Renderer EmojiShow;
     public KMAudio audio;
     public KMNeedyModule Needy;
 
-    private static string[] _emojis = new[] { "happy", "fuzless", "mad" };
+    private static string[] _emojis = new[] { "sleep", "stare", "cry" };
 
     int emojiSprite = 0;
 
@@ -23,11 +24,16 @@ public class literallyMaldingScript : MonoBehaviour {
 
     private void Start()
     {
+        Patrick.SetActive(false);
         audio = GetComponent<KMAudio>();
+        emojiSprite = 0;
     }
 
     void Awake()
     {
+        Patrick.SetActive(false);
+        audio = GetComponent<KMAudio>();
+        emojiSprite = 0;
         moduleId = moduleIdCounter++;
         Needy = GetComponent<KMNeedyModule>();
         Needy.OnNeedyActivation += OnNeedyActivation;
@@ -38,34 +44,44 @@ public class literallyMaldingScript : MonoBehaviour {
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         if (Activated <= 1)
         {
-            Hat.OnInteract += delegate () { Hatt(); return false; };
+            PlayButton.OnInteract += delegate () { PressPlay(); return false; };
         }
         else
         {
-            Hat.OnInteract += delegate () { Hatt(); return true; };
+            PlayButton.OnInteract += delegate () { PressPlay(); return true; };
         }
     }
 
-    private void Hatt()
+    private void PressPlay()
     {
         if (Activated <= 1)
         {
+            Patrick.SetActive(true);
             Needy.HandlePass();
             _isSolved = true;
             GetComponent<KMSelectable>().AddInteractionPunch();
+            audio.PlaySoundAtTransform("coconutlol", transform);
             Activated = 54;
-            Invoke("OnNeedyDeactivation", 0.7f);
+            Play();
         }
         else
         {
             GetComponent<KMSelectable>().AddInteractionPunch();
         }
+    }
+
+    private void Play()
+    {
+        emojiSprite = 2;
+        EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+        Invoke("OnNeedyDeactivation", 5.2f);
     }
 
     protected void OnNeedyActivation()
     {
         _isSolved = false;
         emojiSprite = 1;
+        audio.PlaySoundAtTransform("laughactivate", transform);
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         Activated = 0;
     }
@@ -74,6 +90,7 @@ public class literallyMaldingScript : MonoBehaviour {
     {
         emojiSprite = 0;
         Activated = 54;
+        Patrick.SetActive(false);
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
     }
 
@@ -82,20 +99,20 @@ public class literallyMaldingScript : MonoBehaviour {
         GetComponent<KMNeedyModule>().OnStrike();
         emojiSprite = 2;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
-        audio.PlaySoundAtTransform("steam", transform);
         Needy.HandlePass();
         _isSolved = true;
 
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} fez to give Grunkle Squeaky his fez back.";
+    private readonly string TwitchHelpMessage = @"Use !{0} coconut to press the coconut";
 #pragma warning disable 414
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "fez" && Tears[0] != "claim")
+        if (Tears[0] == "coconut" && Tears[0] != "claim")
         {
-            Hat.OnInteract();
+            PlayButton.OnInteract();
+            yield return string.Format("sendtochaterror HAHAHAHA :D");
             yield return null;
         }
         else
@@ -106,6 +123,7 @@ public class literallyMaldingScript : MonoBehaviour {
             }
             else
             {
+                yield return string.Format("sendtochaterror WEEEEEEEEEEE :D");
                 yield return null;
             }
         }

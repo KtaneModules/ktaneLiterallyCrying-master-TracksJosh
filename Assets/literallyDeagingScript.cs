@@ -4,15 +4,16 @@ using System.Collections;
 using KModkit;
 using System;
 
-public class literallyMaldingScript : MonoBehaviour {
+public class literallyDeagingScript : MonoBehaviour
+{
 
-    public KMSelectable Hat;
+    public KMSelectable CakeYum;
     public Material[] Emoji;
     public Renderer EmojiShow;
     public KMAudio audio;
     public KMNeedyModule Needy;
 
-    private static string[] _emojis = new[] { "happy", "fuzless", "mad" };
+    private static string[] _emojis = new[] { "baby", "grown", "dead" };
 
     int emojiSprite = 0;
 
@@ -20,6 +21,7 @@ public class literallyMaldingScript : MonoBehaviour {
     int moduleId;
     int Activated;
     private bool _isSolved;
+    private bool played;
 
     private void Start()
     {
@@ -38,15 +40,25 @@ public class literallyMaldingScript : MonoBehaviour {
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         if (Activated <= 1)
         {
-            Hat.OnInteract += delegate () { Hatt(); return false; };
+            CakeYum.OnInteract += delegate () { Cake(); return false; };
         }
         else
         {
-            Hat.OnInteract += delegate () { Hatt(); return true; };
+            CakeYum.OnInteract += delegate () { Cake(); return true; };
         }
     }
 
-    private void Hatt()
+    private void Update()
+    {
+        int needyTimer = (int)GetComponent<KMNeedyModule>().GetNeedyTimeRemaining();
+        if(needyTimer == 5 && !played)
+        {
+            played = true;
+            OldGeezer();
+        }
+    }
+
+    private void Cake()
     {
         if (Activated <= 1)
         {
@@ -54,6 +66,7 @@ public class literallyMaldingScript : MonoBehaviour {
             _isSolved = true;
             GetComponent<KMSelectable>().AddInteractionPunch();
             Activated = 54;
+            audio.PlaySoundAtTransform("happy birthday", transform);
             Invoke("OnNeedyDeactivation", 0.7f);
         }
         else
@@ -62,9 +75,18 @@ public class literallyMaldingScript : MonoBehaviour {
         }
     }
 
+    private void OldGeezer()
+    {
+        audio.PlaySoundAtTransform("wtf", transform);
+        emojiSprite = 2;
+        EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
+    }
+
     protected void OnNeedyActivation()
     {
+        played = false;
         _isSolved = false;
+        audio.PlaySoundAtTransform("sneeze", transform);
         emojiSprite = 1;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         Activated = 0;
@@ -88,14 +110,14 @@ public class literallyMaldingScript : MonoBehaviour {
 
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} fez to give Grunkle Squeaky his fez back.";
+    private readonly string TwitchHelpMessage = @"Use !{0} cake to give the emoji a cake.";
 #pragma warning disable 414
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "fez" && Tears[0] != "claim")
+        if (Tears[0] == "cake" && Tears[0] != "claim")
         {
-            Hat.OnInteract();
+            CakeYum.OnInteract();
             yield return null;
         }
         else

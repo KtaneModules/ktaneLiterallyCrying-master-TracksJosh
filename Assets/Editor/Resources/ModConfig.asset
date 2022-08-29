@@ -26,6 +26,6 @@ MonoBehaviour:
     Module IDs: literallyCrying, literallyDying, literallyMalding
 
 '
-  version: 2.0
+  version: 3.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: c45f45273c4710d40b5ea4b69cc5ba91, type: 3}
+  previewImage: {fileID: 2800000, guid: 22a9c55f259197a4f84eedbc8b26d06f, type: 3}
