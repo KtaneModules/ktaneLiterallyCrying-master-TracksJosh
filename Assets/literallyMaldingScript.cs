@@ -93,21 +93,14 @@ public class literallyMaldingScript : MonoBehaviour {
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "fez" && Tears[0] != "claim")
+        if (Tears[0] == "fez")
         {
             Hat.OnInteract();
             yield return null;
         }
         else
         {
-            if (Tears[0] == "claim")
-            {
-                yield return null;
-            }
-            else
-            {
-                yield return null;
-            }
+            yield return null;
         }
     }
 }

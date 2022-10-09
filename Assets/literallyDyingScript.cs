@@ -140,21 +140,14 @@ public class literallyDyingScript : MonoBehaviour
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "heal" && Tears[0] != "claim")
+        if (Tears[0] == "heal")
         {
             Bandage.OnInteract();
             yield return null;
         }
         else
         {
-            if (Tears[0] == "claim")
-            {
-                yield return null;
-            }
-            else
-            {
-                yield return null;
-            }
+            yield return null;
         }
     }
 }

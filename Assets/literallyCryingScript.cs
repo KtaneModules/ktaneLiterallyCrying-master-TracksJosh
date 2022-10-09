@@ -101,23 +101,14 @@ public class literallyCryingScript : MonoBehaviour
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] Tears = command.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        if (Tears[0] == "play" && Tears[0] != "claim")
+        if (Tears[0] == "play")
         {
             PlayButton.OnInteract();
-            yield return string.Format("sendtochaterror WAAAAAAAAAAAAAAAH :(");
             yield return null;
         }
         else
         {
-            if (Tears[0] == "claim")
-            {
-                yield return null;
-            }
-            else
-            {
-                yield return string.Format("sendtochaterror HAH! LOL! I can't cry :D");
-                yield return null;
-            }
+            yield return null;
         }
     }
 }

@@ -27,6 +27,6 @@ MonoBehaviour:
     literallyMalding, literallyTaunting
 
 '
-  version: 3.001
+  version: 3.002
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 22a9c55f259197a4f84eedbc8b26d06f, type: 3}
