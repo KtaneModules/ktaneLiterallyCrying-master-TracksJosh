@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using KModkit;
 using System;
+using System.Text.RegularExpressions;
 
 public class literallyTauntingScript : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class literallyTauntingScript : MonoBehaviour
     private bool _active5;
     private int stage = 1;
     private int press = 0;
+    private KMSelectable[] buttons;
+    private bool isActivated;
 
     private void Update()
     {
@@ -63,8 +66,9 @@ public class literallyTauntingScript : MonoBehaviour
 
     private void Start()
     {
+        buttons = new[] { Taunt1, Taunt2, Taunt3, Taunt4, Taunt5 };
         audio = GetComponent<KMAudio>();
-        _isSolved = false;
+        _isSolved = true;
         _active1 = false;
         _active2 = false;
         _active3 = false;
@@ -140,6 +144,7 @@ public class literallyTauntingScript : MonoBehaviour
 
     protected void OnNeedyActivation()
     {
+        isActivated = true;
         emojiSprite = 1;
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         PlayButton.gameObject.SetActive(false);
@@ -157,6 +162,7 @@ public class literallyTauntingScript : MonoBehaviour
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         stage++;
         _isSolved = true;
+        isActivated = false;
     }
 
     protected void OnTimerExpired()
@@ -177,12 +183,12 @@ public class literallyTauntingScript : MonoBehaviour
         EmojiShow.GetComponent<MeshRenderer>().material = Emoji[emojiSprite];
         Needy.HandlePass();
         _isSolved = true;
-
+        isActivated = false;
     }
 
     private void activateButtons()
     {
-        if(stage >= 1)
+        if (stage >= 1)
         {
             _active1 = true;
         }
@@ -207,5 +213,25 @@ public class literallyTauntingScript : MonoBehaviour
         _isSolved = false;
     }
 
-    
+#pragma warning disable 0414
+    private readonly string TwitchHelpMessage = @"Use !{0} taunt to taunt TracksJosh.";
+#pragma warning restore 0414
+
+    private IEnumerator ProcessTwitchCommand(string command)
+    {
+        var m = Regex.Match(command, @"^\s*taunt\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (!m.Success)
+            yield break;
+        yield return null;
+        if (!isActivated)
+            yield break;
+        while (_isSolved)
+            yield return null;
+        buttons = new[] { Taunt1, Taunt2, Taunt3, Taunt4, Taunt5 }.Where(i => i.gameObject.activeInHierarchy).ToArray();
+        foreach (var b in buttons)
+        {
+            b.OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 }
